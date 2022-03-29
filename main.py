@@ -8,22 +8,40 @@ import tkinter.font as tkFont
 # GLOBALS
 WINDOW_W = 600  # Window Width
 WINDOW_H = 300  # Window Height
+timer_count = 10
 
 # Starter Text
 
 
-def user_input(*args):
-    pass
+def user_input(key):
+    global timer_count
+    print(key.char)
+    try:
+        window.after_cancel(timer)
+    except NameError:
+        pass
+    timer_count = 10
+    typing_timer()
 
 
 def typing_timer():
-    pass
+    global timer_count, timer
+    print(timer_count)
+    timer_count -= 1
+    timer = window.after(1000, typing_timer)
 
 
 # Instructions
 
 # Reset app
+
+
 def reset():
+    # Stop timer
+    try:
+        window.after_cancel(timer)
+    except NameError:
+        pass
     # Clear Instructions
     info_line_1.destroy()
     info_line_2.destroy()
@@ -35,12 +53,15 @@ def reset():
     typing_box = Text(width=40, height=20)
     typing_box.place(anchor=CENTER, relx=0.5, rely=0.5, y=-25)
     typing_box.focus_set()
+    # Reset button
     reset_button.place(anchor=CENTER, relx=0.5, rely=0.5, y=200)
+    # Watch for user typing
+    typing_box.bind("<Key>", user_input)
 
 
 # Setup window for application
 window = Tk()
-user_text = StringVar()
+# user_text = StringVar()  # This is for tracking the users input
 window.title('A Dangerous Writing App')
 window.geometry(f'{WINDOW_W}x{WINDOW_H}')
 window.resizable(width=False, height=False)
@@ -67,6 +88,7 @@ reset_button = Button(text='Start/Reset', command=reset)
 reset_button.place(anchor=CENTER, relx=0.5, rely=0.5, y=75)
 
 # Watch for text entering
+
 
 # If no entry
 # Start timer
